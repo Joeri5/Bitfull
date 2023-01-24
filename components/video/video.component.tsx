@@ -4,7 +4,18 @@ import styled from "styled-components";
 interface Props {
     src: string;
     poster: string;
+    title: string;
 }
+
+const VideoWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+
+  @media (min-width: 1536px) {
+    width: 100%;
+  }
+`;
 
 const Wrapper = styled.div`
   position: relative;
@@ -25,6 +36,10 @@ const MenuWrapper = styled.div`
   flex-direction: column;
   width: 100%;
   z-index: 1;
+
+  @media (min-width: 1024px) {
+    padding: 1.0125rem 3.4375rem;
+  }
 `;
 
 const SliderWrapper = styled.div`
@@ -192,9 +207,57 @@ const SliderWrapper = styled.div`
 `;
 
 const ControlWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  & > .main_controls {
+    display: flex;
+    gap: 0.9375rem;
+    align-items: center;
+  }
+
+  & button {
+    background: none;
+    border: none;
+
+    & > svg {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+  }
 `;
 
-const VideoPlayer: React.FC<Props> = ({src, poster}) => {
+const Title = styled.p`
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+
+  @media (min-width: 768px) {
+    font-size: 1.15rem;
+  }
+`;
+
+const PlayButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: absolute;
+  top: 41%;
+  left: 45.5%;
+
+  & > svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: #D088F1;
+  }
+
+  @media (min-width: 1024px) {
+    display: none;
+  }
+`;
+
+const VideoPlayer: React.FC<Props> = ({src, poster, title}) => {
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
@@ -202,6 +265,16 @@ const VideoPlayer: React.FC<Props> = ({src, poster}) => {
     const [hover, setHover] = useState(true);
     const [timeText, setTimeText] = useState('00:00');
     const [durationText, setDurationText] = useState('00:00');
+    const [ios, setIos] = useState(false);
+
+    useEffect(() => {
+        function isIOS(): boolean {
+            return /iPad|iPhone|iPod/.test(navigator.userAgent);
+        }
+
+        setIos(isIOS());
+    }, []);
+
 
     const handlePlayPause = () => {
         if (videoRef.current) {
@@ -233,6 +306,45 @@ const VideoPlayer: React.FC<Props> = ({src, poster}) => {
             setCurrentTime(Number(e.target.value));
         }
     };
+
+    const handleSkip = (e: React.MouseEvent<HTMLButtonElement>) => {
+        if (videoRef.current) {
+            const skip = Number(e.currentTarget.dataset.skip);
+            videoRef.current.currentTime += skip;
+            setCurrentTime(videoRef.current.currentTime);
+        }
+    }
+
+    const handleVolume = (volume: number | null) => {
+        if (volume !== null && videoRef.current) {
+            videoRef.current.volume = volume;
+        }
+    };
+
+    const handleEnlarge = () => {
+        if (videoRef.current) {
+            if (videoRef.current.requestFullscreen) {
+                videoRef.current.requestFullscreen();
+                // @ts-ignore
+            } else if (videoRef.current.mozRequestFullScreen) {
+                // @ts-ignore
+                videoRef.current.mozRequestFullScreen();
+                // @ts-ignore
+            } else if (videoRef.current.webkitRequestFullscreen) {
+                // @ts-ignore
+                videoRef.current.webkitRequestFullscreen();
+                // @ts-ignore
+            } else if (videoRef.current.msRequestFullscreen) {
+                // @ts-ignore
+                videoRef.current.msRequestFullscreen();
+            } else {
+                console.log('Fullscreen not supported');
+            }
+        } else {
+            console.log('No video element');
+        }
+    }
+
 
     useEffect(() => {
         if (!isPlaying) {
@@ -288,37 +400,103 @@ const VideoPlayer: React.FC<Props> = ({src, poster}) => {
 
     }, [isPlaying]);
 
-
     return (
-        <Wrapper onMouseEnter={() => (isPlaying ? setHover(true) : null)}
-                 onMouseLeave={() => (isPlaying ? setHover(false) : null)}>
-            <MenuWrapper style={{opacity: hover ? "1" : "0"}}>
-                <SliderWrapper>
-                    <input type="range" min={0} max={videoRef.current ? videoRef.current.duration : 100}
-                           value={currentTime}
-                           onChange={handleSeek}/>
-                </SliderWrapper>
-                <ControlWrapper>
-                    <button onClick={handlePlayPause}>
-                        {isPlaying ? 'Pause' : 'Play'}
-                    </button>
-                    <p>
-                        {timeText} / {durationText}
-                    </p>
-                </ControlWrapper>
-            </MenuWrapper>
-            <Video
-                ref={videoRef}
-                onPlay={() => setIsPlaying(true)}
-                onPause={() => setIsPlaying(false)}
-                onTimeUpdate={handleTimeUpdate}
-                onDurationChange={handleDurationChange}
-                controls={false}
-                poster={poster}
-            >
-                <source src={src} type={'video/mp4'}/>
-            </Video>
-        </Wrapper>
+        <VideoWrapper>
+            <Wrapper onMouseEnter={() => (isPlaying ? setHover(true) : null)}
+                     onMouseLeave={() => (isPlaying ? setHover(false) : null)}>
+                <PlayButton onClick={handlePlayPause} style={{display: ios ? "" : "none"}}>
+                    {isPlaying ? (
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
+                             stroke="currentColor" className="w-6 h-6">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 5.25v13.5m-7.5-13.5v13.5"/>
+                        </svg>
+                    ) : (
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
+                             stroke="currentColor" className="w-6 h-6">
+                            <path strokeLinecap="round" strokeLinejoin="round"
+                                  d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z"/>
+                        </svg>
+                    )}
+                </PlayButton>
+                <MenuWrapper style={{opacity: hover ? "1" : "0", display: ios ? "none" : ""}}>
+                    <SliderWrapper>
+                        <input type="range" min={0} max={videoRef.current ? videoRef.current.duration : 100}
+                               value={currentTime}
+                               onChange={handleSeek}/>
+                    </SliderWrapper>
+                    <ControlWrapper>
+                        <div className="main_controls">
+                            <button onClick={handlePlayPause}>
+                                {isPlaying ? (
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                         strokeWidth={1.5}
+                                         stroke="currentColor" className="w-6 h-6">
+                                        <path strokeLinecap="round" strokeLinejoin="round"
+                                              d="M15.75 5.25v13.5m-7.5-13.5v13.5"/>
+                                    </svg>
+                                ) : (
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                         strokeWidth={1.5}
+                                         stroke="currentColor" className="w-6 h-6">
+                                        <path strokeLinecap="round" strokeLinejoin="round"
+                                              d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z"/>
+                                    </svg>
+                                )}
+                            </button>
+                            <button onClick={handleSkip}>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                     strokeWidth={1.5}
+                                     stroke="currentColor" className="w-6 h-6">
+                                    <path strokeLinecap="round" strokeLinejoin="round"
+                                          d="M3 8.688c0-.864.933-1.405 1.683-.977l7.108 4.062a1.125 1.125 0 010 1.953l-7.108 4.062A1.125 1.125 0 013 16.81V8.688zM12.75 8.688c0-.864.933-1.405 1.683-.977l7.108 4.062a1.125 1.125 0 010 1.953l-7.108 4.062a1.125 1.125 0 01-1.683-.977V8.688z"/>
+                                </svg>
+                            </button>
+                            <button
+                                onClick={() => handleVolume(videoRef.current ? (videoRef.current.volume === 0 ? 0.5 : 0) : null)}>
+                                {videoRef.current ? videoRef.current.volume === 0 ? (
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                         strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                        <path strokeLinecap="round" strokeLinejoin="round"
+                                              d="M17.25 9.75L19.5 12m0 0l2.25 2.25M19.5 12l2.25-2.25M19.5 12l-2.25 2.25m-10.5-6l4.72-4.72a.75.75 0 011.28.531V19.94a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.506-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.395C2.806 8.757 3.63 8.25 4.51 8.25H6.75z"/>
+                                    </svg>
+                                ) : (
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                         strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                        <path strokeLinecap="round" strokeLinejoin="round"
+                                              d="M19.114 5.636a9 9 0 010 12.728M16.463 8.288a5.25 5.25 0 010 7.424M6.75 8.25l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75z"/>
+                                    </svg>
+                                ) : null}
+                            </button>
+                            <p>
+                                {timeText} / {durationText}
+                            </p>
+                        </div>
+                        <div className="enlarge">
+                            <button onClick={handleEnlarge}>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                     strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                    <path strokeLinecap="round" strokeLinejoin="round"
+                                          d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </ControlWrapper>
+                </MenuWrapper>
+                <Video
+                    ref={videoRef}
+                    controls={false}
+                    controlsList="nodownload"
+                    onPlay={() => setIsPlaying(true)}
+                    onPause={() => setIsPlaying(false)}
+                    onTimeUpdate={handleTimeUpdate}
+                    onDurationChange={handleDurationChange}
+                    poster={poster}
+                >
+                    <source src={src} type={'video/mp4'}/>
+                </Video>
+            </Wrapper>
+            <Title>{title}</Title>
+        </VideoWrapper>
     );
 };
 
