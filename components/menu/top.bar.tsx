@@ -11,6 +11,7 @@ const Wrapper = styled.nav`
   height: 5.25rem;
   width: 100vw;
   z-index: 10;
+  backdrop-filter: blur(10px);
 
   @media (min-width: 1024px) {
     padding: 2rem 3.125rem;
@@ -59,6 +60,8 @@ const LinkWrapper = styled.div`
   gap: 1.75rem;
 
   & > .login {
+    color: #fff;
+
     &:hover {
       opacity: 0.8;
     }

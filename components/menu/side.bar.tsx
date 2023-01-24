@@ -58,8 +58,7 @@ const IconWrapper = styled.div`
 
 const Sidebar = () => {
     const router = useRouter();
-
-    console.log(router.pathname);
+    
     return (
         <Wrapper>
             <IconWrapper>

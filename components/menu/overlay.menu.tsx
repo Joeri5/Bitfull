@@ -8,15 +8,12 @@ import {selectOverlayMenu} from "@/redux/slices/overlayMenuSlice";
 const Wrapper = styled.div`
   color: #fff;
   width: 100vw;
-  //height: calc(100vh - 6.25rem);
   height: 100%;
   background-image: url("https://media.graphassets.com/ZDX3n4mLRGCh37BD22F9");
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
   padding-top: 5.25rem;
-  //height: 6.25rem;
-  //height: 5.25rem;
 
   @media (min-width: 1024px) {
     display: none;
@@ -57,7 +54,7 @@ const OverlayMenu = () => {
     if (typeof window !== 'undefined') {
         const menu = document.getElementById('overlay-menu');
         if (menu != null) {
-            menu.style.height = `calc(${window.innerHeight}px - 6.25rem)`;
+            menu.style.height = `calc(${window.innerHeight}px - 5.25rem)`;
         }
     }
 

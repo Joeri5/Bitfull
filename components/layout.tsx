@@ -7,6 +7,8 @@ import OverlayMenu from "@/components/menu/overlay.menu";
 import {useAppSelector} from "@/redux/store";
 import {selectOverlayMenu} from "@/redux/slices/overlayMenuSlice";
 import styled from "styled-components";
+import SearchBar from "@/components/menu/search.bar";
+import {selectSearch} from "@/redux/slices/searchSlice";
 
 
 interface LayoutProps {
@@ -14,20 +16,44 @@ interface LayoutProps {
     title: string
 }
 
-const ChildrenWrapper = styled.div`
-  padding: 5.25rem 2rem 6.25rem 2rem;
 
-  @media (min-width: 1024px) {
-    padding: 11.6875rem 3.125rem 0 9.1rem;
+const ChildrenWrapper = styled.div`
+  & > .search {
+    transition: padding-top 0.5s ease-in-out;
+    color: #fff;
+    padding: 11.5rem 2rem 6.25rem 2rem;
+
+    @media (min-width: 1024px) {
+      transition: none;
+      padding: 10.6875rem 3.125rem 0 9.1rem;
+    }
+
+    @media (min-width: 1280px) {
+      transition: none;
+      padding: 10.6875rem 3.125rem 0 10.1rem;
+    }
   }
 
-  @media (min-width: 1280px) {
-    padding: 11.6875rem 3.125rem 0 10.1rem;
+  & > .non_search {
+    transition: padding-top 0.5s ease-in-out;
+    color: #fff;
+    padding: 6.25rem 2rem 6.25rem 2rem;
+
+    @media (min-width: 1024px) {
+      transition: none;
+      padding: 10.6875rem 3.125rem 0 9.1rem;
+    }
+
+    @media (min-width: 1280px) {
+      transition: none;
+      padding: 10.6875rem 3.125rem 0 10.1rem;
+    }
   }
 `;
 
 const Layout = ({children, title}: LayoutProps) => {
     const overlayMenu = useAppSelector(selectOverlayMenu);
+    const search = useAppSelector(selectSearch);
 
     return (
         <>
@@ -42,9 +68,20 @@ const Layout = ({children, title}: LayoutProps) => {
                 <TopBar/>
                 <Sidebar/>
                 <OverlayMenu/>
-                <ChildrenWrapper style={{display: overlayMenu ? "none" : ""}}>
-                    {children}
+                <ChildrenWrapper style={{
+                    display: overlayMenu ? "none" : ""
+                }}>
+                    <div className={`${search ? "search" : "non_search"}`}>
+                        {children}
+                    </div>
                 </ChildrenWrapper>
+                <div style={{
+                    opacity: overlayMenu ? "0" : "1",
+                    transition: "all 0.5s ease-in-out",
+                    userSelect: overlayMenu ? "none" : "auto"
+                }}>
+                    <SearchBar/>
+                </div>
                 <BottomBar/>
             </main>
         </>
