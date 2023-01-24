@@ -15,6 +15,7 @@ const Video = styled.video`
   object-fit: cover;
   object-position: center;
   border-radius: 10px;
+  opacity: 1;
 `;
 
 const MenuWrapper = styled.div`
@@ -23,7 +24,7 @@ const MenuWrapper = styled.div`
   padding: 0.46875rem 1.25rem;
   flex-direction: column;
   width: 100%;
-
+  z-index: 1;
 `;
 
 const SliderWrapper = styled.div`
@@ -199,6 +200,8 @@ const VideoPlayer: React.FC<Props> = ({src, poster}) => {
     const [duration, setDuration] = useState(0);
     const videoRef = React.useRef<HTMLVideoElement>(null);
     const [hover, setHover] = useState(true);
+    const [timeText, setTimeText] = useState('00:00');
+    const [durationText, setDurationText] = useState('00:00');
 
     const handlePlayPause = () => {
         if (videoRef.current) {
@@ -237,6 +240,54 @@ const VideoPlayer: React.FC<Props> = ({src, poster}) => {
         }
     }, [isPlaying]);
 
+    useEffect(() => {
+        if (videoRef.current) {
+            const time = videoRef.current.currentTime;
+            const minutes = Math.floor(time / 60);
+            const seconds = Math.floor(time - minutes * 60);
+            setTimeText(`${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`);
+        }
+    }, [currentTime]);
+
+    useEffect(() => {
+        if (videoRef.current) {
+            const time = videoRef.current.duration;
+            const minutes = Math.floor(time / 60);
+            const seconds = Math.floor(time - minutes * 60);
+            setDurationText(`${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`);
+        }
+    }, [duration]);
+
+    useEffect(() => {
+        const keyDownHandler = (e: KeyboardEvent) => {
+            if (e.key === ' ') {
+                if (videoRef.current) {
+                    if (isPlaying) {
+                        videoRef.current.pause();
+                        setIsPlaying(false);
+                    } else {
+                        videoRef.current.play();
+                        setIsPlaying(true);
+                    }
+                }
+            } else if (e.key === 'ArrowRight') {
+                if (videoRef.current) {
+                    videoRef.current.currentTime += 5;
+                }
+            } else if (e.key === 'ArrowLeft') {
+                if (videoRef.current) {
+                    videoRef.current.currentTime -= 5;
+                }
+            }
+        }
+
+        document.addEventListener('keydown', keyDownHandler);
+        return () => {
+            document.removeEventListener('keydown', keyDownHandler);
+        }
+
+    }, [isPlaying]);
+
 
     return (
         <Wrapper onMouseEnter={() => (isPlaying ? setHover(true) : null)}
@@ -251,6 +302,9 @@ const VideoPlayer: React.FC<Props> = ({src, poster}) => {
                     <button onClick={handlePlayPause}>
                         {isPlaying ? 'Pause' : 'Play'}
                     </button>
+                    <p>
+                        {timeText} / {durationText}
+                    </p>
                 </ControlWrapper>
             </MenuWrapper>
             <Video
