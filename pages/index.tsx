@@ -1,8 +1,12 @@
 import {Inter} from '@next/font/google'
 import styled from 'styled-components'
 import Layout from "@/components/layout";
-import Video from "@/components/video/video.component";
 import VideoPlayer from "@/components/video/video.component";
+import FeaturedStream from "@/components/featured/featured.stream";
+import FeaturedTitle from "@/components/featured/featured.title";
+import {streamOfTheDay} from "@/data/stream.data";
+import FeaturedAuthor from "@/components/featured/featured.author";
+import {topAuthors} from "@/data/author.data";
 
 const inter = Inter({subsets: ['latin']})
 
@@ -74,6 +78,51 @@ const VideoWrapper = styled.div`
   }
 `;
 
+const StreamWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 2rem 0;
+
+  @media (min-width: 1024px) {
+    padding: 3.125rem 0;
+  }
+`;
+
+const FeaturedWrapper = styled.div`
+  padding: 0 4rem 0 0;
+  display: flex;
+  width: 100vw;
+  overflow-x: scroll;
+  gap: 2rem;
+  scroll-snap-type: x var(--tw-scroll-snap-strictness);
+  --tw-scroll-snap-strictness: mandatory;
+
+  ::-webkit-scrollbar {
+    width: 0 !important;
+    height: 0 !important;
+    -webkit-appearance: none;
+  }
+
+
+  @media (min-width: 1024px) {
+    width: calc(100vw - 7.125rem);
+    padding: 0 6.125rem 0 0;
+    gap: 3.25rem;
+  }
+`;
+
+const AuthorWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 2rem 0;
+
+  @media (min-width: 1024px) {
+    padding: 3.125rem 0;
+  }
+`;
+
 export default function Home() {
     return (
         <Layout title="Home">
@@ -96,7 +145,29 @@ export default function Home() {
                 </Wrapper>
             </Header>
             <main>
-
+                <StreamWrapper>
+                    <FeaturedTitle title={" of the day"} colorBefore={"Streams"}/>
+                    <FeaturedWrapper className=".stream">
+                        {streamOfTheDay.map((stream, index) => (
+                            <>
+                                <FeaturedStream key={index} img={stream.img} name={stream.streamer.name}
+                                                title={stream.title}
+                                                profile_pic={stream.streamer.profile_pic}/>
+                            </>
+                        ))}
+                    </FeaturedWrapper>
+                </StreamWrapper>
+                <AuthorWrapper>
+                    <FeaturedTitle title={"Top "} colorAfter={"authors"}/>
+                    <FeaturedWrapper>
+                        {topAuthors.map((author, index) => (
+                            <>
+                                <FeaturedAuthor key={index} img={author.img} profile_pic={author.profile_pic}
+                                                name={author.name}/>
+                            </>
+                        ))}
+                    </FeaturedWrapper>
+                </AuthorWrapper>
             </main>
         </Layout>
     )

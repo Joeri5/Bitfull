@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from "styled-components";
-import {sideBarTabs} from "@/data/menu";
+import {sideBarTabs} from "@/data/menu.data";
 import {useRouter} from "next/router";
 import Link from "next/link";
 
@@ -58,7 +58,7 @@ const IconWrapper = styled.div`
 
 const Sidebar = () => {
     const router = useRouter();
-    
+
     return (
         <Wrapper>
             <IconWrapper>

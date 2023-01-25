@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from "styled-components";
-import {bottomBarTabs} from "@/data/menu";
+import {bottomBarTabs} from "@/data/menu.data";
 import {useRouter} from "next/router";
 import Link from "next/link";
 import {useAppDispatch, useAppSelector} from "@/redux/store";

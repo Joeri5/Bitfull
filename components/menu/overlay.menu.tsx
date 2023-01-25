@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import styled from "styled-components";
-import {overlayMenuTabs} from "@/data/menu";
+import {overlayMenuTabs} from "@/data/menu.data";
 import Link from "next/link";
 import {useAppSelector} from "@/redux/store";
 import {selectOverlayMenu} from "@/redux/slices/overlayMenuSlice";

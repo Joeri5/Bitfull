@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Link from "next/link";
-import {topBarTabs} from "@/data/menu";
+import {topBarTabs} from "@/data/menu.data";
 
 const Wrapper = styled.nav`
   padding: 2rem 2rem;
