@@ -7,6 +7,8 @@ import FeaturedTitle from "@/components/featured/featured.title";
 import {streamOfTheDay} from "@/data/stream.data";
 import FeaturedAuthor from "@/components/featured/featured.author";
 import {topAuthors} from "@/data/author.data";
+import FeaturedCategory from "@/components/featured/featured.category";
+import {categoryData} from "@/data/category.data";
 
 const inter = Inter({subsets: ['latin']})
 
@@ -123,6 +125,17 @@ const AuthorWrapper = styled.div`
   }
 `;
 
+const CategoriesWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 2rem 0;
+
+  @media (min-width: 1024px) {
+    padding: 3.125rem 0;
+  }
+`;
+
 export default function Home() {
     return (
         <Layout title="Home">
@@ -152,7 +165,7 @@ export default function Home() {
                             <>
                                 <FeaturedStream key={index} img={stream.img} name={stream.streamer.name}
                                                 title={stream.title}
-                                                profile_pic={stream.streamer.profile_pic}/>
+                                                profile_pic={stream.streamer.profile_pic} tags={stream.tags}/>
                             </>
                         ))}
                     </FeaturedWrapper>
@@ -168,6 +181,17 @@ export default function Home() {
                         ))}
                     </FeaturedWrapper>
                 </AuthorWrapper>
+                <CategoriesWrapper>
+                    <FeaturedTitle title={" you'll like"} colorBefore={"Categories"}/>
+                    <FeaturedWrapper>
+                        {categoryData.map((category, index) => (
+                            <>
+                                <FeaturedCategory key={index} img={category.img} title={category.title}
+                                                  tags={category.tags} viewers={category.viewers}/>
+                            </>
+                        ))}
+                    </FeaturedWrapper>
+                </CategoriesWrapper>
             </main>
         </Layout>
     )

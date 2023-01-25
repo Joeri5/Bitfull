@@ -47,6 +47,8 @@ const ProfileWrapper = styled.div`
     width: 2rem;
     height: 2rem;
     border-radius: 50%;
+    object-fit: cover;
+    object-position: center;
 
     @media (min-width: 1024px) {
       width: 2.5rem;
