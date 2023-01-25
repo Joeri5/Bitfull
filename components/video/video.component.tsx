@@ -224,6 +224,7 @@ const ControlWrapper = styled.div`
     & > svg {
       width: 1.5rem;
       height: 1.5rem;
+      color: #ffffff;
     }
   }
 `;
