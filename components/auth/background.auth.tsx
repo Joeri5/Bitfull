@@ -1,5 +1,6 @@
 import React, {useCallback, useEffect, useLayoutEffect} from 'react';
 import styled from "styled-components";
+import Link from "next/link";
 
 const Wrapper = styled.div`
   top: 0;
@@ -132,15 +133,17 @@ const AuthBackground = () => {
 
 
     return (
-        <Wrapper id="auth-background" style={{height: height}}>
+        <Wrapper id="auth-background" style={{height: `${height}px`}}>
             <ContentWrapper>
-                <LogoWrapper>
-                    <Logo src="/logo.svg" alt="bitfull logo"/>
-                    <LogoDesktop>
-                        <img src="/logo_desktop.svg" alt="bitfull logo"/>
-                        <h1 className="righteous">bitfull</h1>
-                    </LogoDesktop>
-                </LogoWrapper>
+                <Link href={'/'}>
+                    <LogoWrapper>
+                        <Logo src="/logo.svg" alt="bitfull logo"/>
+                        <LogoDesktop>
+                            <img src="/logo_desktop.svg" alt="bitfull logo"/>
+                            <h1 className="righteous">bitfull</h1>
+                        </LogoDesktop>
+                    </LogoWrapper>
+                </Link>
                 <TextWrapper>
                     <h1 className="righteous">PLAY, COMPETE,<br/>
                         FOLLOW POPULAR <br/>
