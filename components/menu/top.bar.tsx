@@ -179,10 +179,10 @@ const TopBar = () => {
                     </svg>
                 </SearchWrapper>
                 <LinkWrapper>
-                    <Link href={''} className="login">
+                    <Link href={'/auth/login'} className="login">
                         Login
                     </Link>
-                    <Link href={''} className="sign_up">
+                    <Link href={'/auth/signup'} className="sign_up">
                         Sign Up
                     </Link>
                 </LinkWrapper>

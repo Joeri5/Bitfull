@@ -1,6 +1,6 @@
 import {Inter} from '@next/font/google'
 import styled from 'styled-components'
-import Layout from "@/components/layout";
+import Layout from "@/components/layout/layout";
 import VideoPlayer from "@/components/video/video.component";
 import FeaturedStream from "@/components/featured/featured.stream";
 import FeaturedTitle from "@/components/featured/featured.title";
@@ -9,6 +9,8 @@ import FeaturedAuthor from "@/components/featured/featured.author";
 import {topAuthors} from "@/data/author.data";
 import FeaturedCategory from "@/components/featured/featured.category";
 import {categoryData} from "@/data/category.data";
+import CategoryButton from "@/components/category/category.button";
+import {categoryButton} from "@/data/category.button.data";
 
 const inter = Inter({subsets: ['latin']})
 
@@ -136,6 +138,23 @@ const CategoriesWrapper = styled.div`
   }
 `;
 
+const CategoriesButtonWrapper = styled.div`
+  display: none;
+
+  @media (min-width: 768px) {
+    display: grid;
+    gap: 1rem;
+    padding: 2rem 0;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 1536px) {
+    display: flex;
+    justify-content: space-between;
+    padding: 4rem 0;
+  }
+`;
+
 export default function Home() {
     return (
         <Layout title="Home">
@@ -192,6 +211,13 @@ export default function Home() {
                         ))}
                     </FeaturedWrapper>
                 </CategoriesWrapper>
+                <CategoriesButtonWrapper>
+                    {categoryButton.map((category, index) => (
+                        <>
+                            <CategoryButton key={index} img={category.img} title={category.title}/>
+                        </>
+                    ))}
+                </CategoriesButtonWrapper>
             </main>
         </Layout>
     )
