@@ -24,7 +24,7 @@ const ImageWrapper = styled.div`
     object-position: center;
 
     @media (min-width: 1024px) {
-      width: 50%;
+      width: 50vw;
     }
   }
 `;
