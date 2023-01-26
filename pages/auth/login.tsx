@@ -12,6 +12,8 @@ const Wrapper = styled.div`
 
 const BackgroundWrapper = styled.div`
   position: relative;
+  height: 100vh;
+  width: 100vw;
 `;
 
 const FormWrapper = styled.div`
