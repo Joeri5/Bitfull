@@ -25,24 +25,24 @@ const router = createBrowserRouter(
     ])
 )
 
-const AuthWrapper = (props: { children: ReactNode }) => {
-    const dispatch = useAppDispatch();
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        (async () => {
-            const user = await identify();
-            dispatch(setUser(user));
-            setLoading(false);
-        })();
-    }, []);
-
-    return (
-        <>
-            {loading ? <div>Laden...</div> : props.children}
-        </>
-    )
-}
+// const AuthWrapper = (props: { children: ReactNode }) => {
+//     const dispatch = useAppDispatch();
+//     const [loading, setLoading] = useState(true);
+//
+//     useEffect(() => {
+//         (async () => {
+//             const user = await identify();
+//             dispatch(setUser(user));
+//             setLoading(false);
+//         })();
+//     }, []);
+//
+//     return (
+//         <>
+//             {loading ? <div>Laden...</div> : props.children}
+//         </>
+//     )
+// }
 
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
@@ -50,9 +50,9 @@ const root = ReactDOM.createRoot(
 root.render(
     <React.StrictMode>
         <Provider store={store}>
-            <AuthWrapper>
-                <RouterProvider router={router}/>
-            </AuthWrapper>
+            {/*<AuthWrapper>*/}
+            <RouterProvider router={router}/>
+            {/*</AuthWrapper>*/}
         </Provider>
     </React.StrictMode>
 );
