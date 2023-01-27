@@ -1,19 +1,60 @@
-import React from 'react';
+import React, {ReactNode, useEffect, useState} from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
+import {Provider} from "react-redux";
+import {store, useAppDispatch, useAppSelector} from "./redux/store";
+import {createBrowserRouter, createRoutesFromElements, Route, RouterProvider} from "react-router-dom";
+import HomePage from "./pages/home.page";
+import LoginPage from "./pages/auth/login.page";
+import {identify} from "./api";
+import {selectAuth, setUser} from "./redux/slices/authSlice";
+import DashboardPage from "./pages/dashboard/dashboard.page";
+import UserPage from "./pages/user/user.page";
+import UserUpload from "./pages/user/user.upload";
+
+const router = createBrowserRouter(
+    createRoutesFromElements([
+        <>
+            <Route path="/" element={<HomePage/>}/>
+            <Route path="/auth/login" element={<LoginPage/>}/>
+            <Route path="/dashboard" element={<DashboardPage/>}/>
+            <Route path="/user/:username" element={<UserPage/>}/>
+            <Route path={"/user/upload"} element={<UserUpload/>}/>
+        </>
+    ])
+)
+
+const AuthWrapper = (props: { children: ReactNode }) => {
+    const dispatch = useAppDispatch();
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        (async () => {
+            const user = await identify();
+            dispatch(setUser(user));
+            setLoading(false);
+        })();
+    }, []);
+
+    return (
+        <>
+            {loading ? <div>Laden...</div> : props.children}
+        </>
+    )
+}
 
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
+    document.getElementById('root') as HTMLElement
 );
 root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+    <React.StrictMode>
+        <Provider store={store}>
+            <AuthWrapper>
+                <RouterProvider router={router}/>
+            </AuthWrapper>
+        </Provider>
+    </React.StrictMode>
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
