@@ -12,12 +12,14 @@ import {selectAuth, setUser} from "./redux/slices/authSlice";
 import DashboardPage from "./pages/dashboard/dashboard.page";
 import UserPage from "./pages/user/user.page";
 import UserUpload from "./pages/user/user.upload";
+import SignupPage from "./pages/auth/signup.page";
 
 const router = createBrowserRouter(
     createRoutesFromElements([
         <>
             <Route path="/" element={<HomePage/>}/>
             <Route path="/auth/login" element={<LoginPage/>}/>
+            <Route path="/auth/signup" element={<SignupPage/>}/>
             <Route path="/dashboard" element={<DashboardPage/>}/>
             <Route path="/user/:username" element={<UserPage/>}/>
             <Route path={"/user/upload"} element={<UserUpload/>}/>
